@@ -142,14 +142,23 @@ def getPrintedMoveMessage(indent):
     return printedMessage
 
 def printMove(originalBoard, indent=0):
+    first_move_of_set = True
     for move in range(1, 10):
         board = copy.copy(originalBoard)
 
         if not isSpaceFree(board, move):
             logging.debug('skipping %s' % (move))
             continue
-
-        print('    ' * indent + "if move == '%s':" % (move))
+        
+        if not(first_move_of_set):
+          print('    ' * indent + "except AssertionError:")
+          print('    ' * (indent+1) + "pass")
+        
+        first_move_of_set = False
+            
+        print('    ' * indent + "try:")
+        print('    ' * (indent+1) + "assert move == '%s'" % (move))
+        
         #if computerMoveMsg != '':
         #    print('    ' * (indent+1) + computerMoveMsg)
         #import pdb; pdb.set_trace()
@@ -163,6 +172,8 @@ def printMove(originalBoard, indent=0):
             print(getPrintedBoard(board, (indent+1)))
             print('    ' * (indent+1) + "print('You have won!')")
             print('    ' * (indent+1) + "sys.exit()")
+            #print('    ' * indent + "except AssertionError:")
+            #print('    ' * (indent+1) + "pass")
             continue
 
         if isBoardFull(board):
@@ -170,6 +181,8 @@ def printMove(originalBoard, indent=0):
             print(getPrintedBoard(board, (indent+1)))
             print('    ' * (indent+1) + "print('It\\'s a tie!')")
             print('    ' * (indent+1) + "sys.exit()")
+            #print('    ' * indent + "except AssertionError:")
+            #print('    ' * (indent+1) + "pass")
             continue
 
         compMove = getComputerMove(board, 'O')
@@ -179,6 +192,8 @@ def printMove(originalBoard, indent=0):
             print(getPrintedBoard(board, (indent+1)))
             print('    ' * (indent+1) + "print('The computer wins!')")
             print('    ' * (indent+1) + "sys.exit()")
+            #print('    ' * indent + "except AssertionError:")
+            #print('    ' * (indent+1) + "pass")
             continue
 
         print('    ' * (indent+1) + allComputerMoveMessages[compMove])
@@ -188,16 +203,22 @@ def printMove(originalBoard, indent=0):
         print('    ' * (indent+1) + "move = input()\n")
         #printMove(copy.copy(board), indent + 1, allComputerMoveMessages[compMove])
         printMove(copy.copy(board), indent + 1)
-
+    print('    ' * indent + "except AssertionError:")
+    print('    ' * (indent+1) + "pass")
 
 print('''# My first tic-tac-toe program, by Al Sweigart al@inventwithpython.com
 # This sure was a lot of typing, but I finally finished it!
 
+# Edited by @enoua5. Just learned about try/catch, isn't it cool? (:
+
 # (This is a joke program.)
 
 import sys
-if sys.version_info[0] == 2:
+try:
+    assert sys.version_info[0] == 2
     input = raw_input # python 2 compatibility
+except AssertionError:
+  pass
 print('Welcome to Tic Tac Toe!')
 print('You are X.\\n')
 ''')
